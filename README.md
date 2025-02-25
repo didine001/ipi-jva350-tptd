@@ -54,7 +54,12 @@ https://git-scm.com/download/win ). Quelques liens :
   - ajoutez dans le workflow Github la configuration de l'analyse Sonar Cloud du code
 - Rédigez **ci-dessous** une courte analyse du premier rapport produit par Sonar (métriques, état général...) :
 
-Le premier rapport Sonar indique...
+**Nombre total d'issues** : 30 pb détectés dans le code.
+
+**Couverture des tests** : 0.0% 
+
+**Aucun test unitaire n'a été détecté**
+Duplication du code : 3.6%
 
 
 ### Tests unitaires
