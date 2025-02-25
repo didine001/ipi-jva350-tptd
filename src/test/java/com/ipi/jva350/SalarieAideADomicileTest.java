@@ -1,4 +1,5 @@
 package com.ipi.jva350;
+
 import com.ipi.jva350.model.SalarieAideADomicile;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
