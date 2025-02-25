@@ -3,10 +3,12 @@ package com.ipi.jva350;
 import com.ipi.jva350.exception.SalarieException;
 import com.ipi.jva350.model.SalarieAideADomicile;
 import com.ipi.jva350.service.SalarieAideADomicileService;
+import com.ipi.jva350.repository.SalarieAideADomicileRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -14,15 +16,19 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
-import static org.mockito.Mockito.*;@ExtendWith(MockitoExtension.class)
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 public class SalarieAideADomicileServiceTest {
 
     @InjectMocks
     private SalarieAideADomicileService salarieAideADomicileService;
 
+    @Mock
+    private SalarieAideADomicileRepository repository;
+
     @Test
     public void testAjouteConge_SalarieSansDroitConges() {
-
         SalarieAideADomicile salarie = mock(SalarieAideADomicile.class);
         LocalDate startDate = LocalDate.of(2022, 11, 1);
         LocalDate endDate = LocalDate.of(2022, 11, 5);
@@ -31,7 +37,7 @@ public class SalarieAideADomicileServiceTest {
         SalarieException e = Assertions.assertThrows(SalarieException.class, () ->
                 salarieAideADomicileService.ajouteConge(salarie, startDate, endDate)
         );
-        Assertions.assertEquals(e.getMessage(), "N'a pas légalement droit à des congés payés !");
+        Assertions.assertEquals("N'a pas légalement droit à des congés payés !", e.getMessage());
     }
 
     @Test
@@ -45,12 +51,11 @@ public class SalarieAideADomicileServiceTest {
         SalarieException e = Assertions.assertThrows(SalarieException.class, () ->
                 salarieAideADomicileService.ajouteConge(salarie, startDate, endDate)
         );
-        Assertions.assertEquals(e.getMessage(), "Pas besoin de congés !");
+        Assertions.assertEquals("Pas besoin de congés !", e.getMessage());
     }
 
     @Test
     public void testAjouteConge_SalariePrendCongeAvantMoisEnCours() {
-        // Given
         SalarieAideADomicile salarie = mock(SalarieAideADomicile.class);
         LocalDate startDate = LocalDate.of(2022, 10, 1);
         LocalDate endDate = LocalDate.of(2022, 10, 5);
@@ -58,13 +63,41 @@ public class SalarieAideADomicileServiceTest {
         Mockito.when(salarie.aLegalementDroitADesCongesPayes()).thenReturn(true);
         Mockito.when(salarie.calculeJoursDeCongeDecomptesPourPlage(startDate, endDate))
                 .thenReturn(new LinkedHashSet<>(Arrays.asList(startDate, LocalDate.of(2022, 10, 2))));
-
         Mockito.when(salarie.getMoisEnCours()).thenReturn(LocalDate.of(2022, 11, 1));
 
         SalarieException e = Assertions.assertThrows(SalarieException.class, () ->
                 salarieAideADomicileService.ajouteConge(salarie, startDate, endDate)
         );
+        Assertions.assertEquals("Pas possible de prendre de congé avant le mois en cours !", e.getMessage());
+    }
 
-        Assertions.assertEquals(e.getMessage(), "Pas possible de prendre de congé avant le mois en cours !");
+    @Test
+    public void testCreerSalarie_Succes() throws SalarieException {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        salarie.setNom("Durand");
+
+        when(repository.findByNom("Durand")).thenReturn(null);
+
+        salarieAideADomicileService.creerSalarieAideADomicile(salarie);
+        verify(repository, times(1)).save(salarie);
+    }
+
+    @Test
+    public void testCreerSalarie_NomDejaPris() {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        salarie.setNom("Dupont");
+
+        when(repository.findByNom("Dupont")).thenReturn(new SalarieAideADomicile());
+
+        Assertions.assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
+    }
+
+    @Test
+    public void testCreerSalarie_IdDejaFournie() {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        salarie.setId(1L);
+        salarie.setNom("Martin");
+
+        Assertions.assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
     }
 }
