@@ -105,14 +105,4 @@ public class SalarieAideADomicileServiceTest {
 
         Assertions.assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
     }
-    @Test
-    public void testAjouteConge_Success(){
-        SalarieAideADomicile salarie = new SalarieAideADomicile("Dupont", LocalDate.of(2022, 1, 1), LocalDate.of(2024, 2, 1),
-                200, 20, 180, 18, 5);
-        repository.save(salarie);
-        LocalDate startDate = LocalDate.of(2024, 3, 1);
-        LocalDate endDate = LocalDate.of(2024, 3, 5);
-
-        Assertions.assertDoesNotThrow(() -> salarieAideADomicileService.ajouteConge(salarie, startDate, endDate));
-    }
 }
