@@ -67,77 +67,25 @@ public final class Entreprise {
 
         );
     }
-
-    public static boolean bissextile(int y) {
-        String tmp = String.valueOf(y);
-        if (tmp.charAt(2) == '1' || tmp.charAt(2) == '3' || tmp.charAt(2) == 5 || tmp.charAt(2) == '7' || tmp.charAt(2) == '9') {
-            if (tmp.charAt(3)=='2'||tmp.charAt(3)=='6') return true;
-            else
-                return false;
-        }else{
-            if (tmp.charAt(2) == '0' && tmp.charAt(3) == '0') {
-                return false;
-            }
-            if (tmp.charAt(3)=='0'||tmp.charAt(3)=='4'||tmp.charAt(3)=='8')return true;
-        }
-        return false;
-    }
-
     public static double proportionPondereeDuMois(LocalDate moisDuConge) {
-        int proportionPonderee = 8;
         int mois = 1 + (moisDuConge.getMonthValue() + 6) % 12;
-        if (mois >= 2) {
-            proportionPonderee += 20;
+        int[] poids = new int[12];
+        Arrays.fill(poids, 8);
+        for (int i = 1; i <= mois - 1; i++) {
+            poids[i] += 12;
         }
-        if (mois >= 3) {
-            proportionPonderee += 20;
-        }
-        if (mois >= 4) {
-            proportionPonderee += 8;
-        }
-        if (mois >= 5) {
-            proportionPonderee += 8;
-        }
-        if (mois >= 6) {
-            proportionPonderee += 8;
-        }
-        if (mois >= 7) {
-            proportionPonderee += 8;
-        }
-        if (mois >= 8) {
-            proportionPonderee += 8;
-        }
-        if (mois >= 9) {
-            proportionPonderee += 8;
-        }
-        if (mois >= 10) {
-            proportionPonderee += 8;
-        }
-        if (mois >= 11) {
-            proportionPonderee += 8;
-        }
-        if (mois >= 12) {
-            proportionPonderee += 8;
-        }
+        int proportionPonderee = Arrays.stream(poids).sum();
         return proportionPonderee / 12d / 10d;
     }
-
-
     public static LocalDate getPremierJourAnneeDeConges(LocalDate d) {
         return d == null ? null
                 : d.getMonthValue() > 5 ? LocalDate.of(d.getMonthValue(), 6, 1)
                 : LocalDate.of(d.getYear() - 1, 6, 1);
     }
-
     public static boolean estJourFerie(LocalDate jour) {
-        int monEntier = (int) Entreprise.joursFeries(jour).stream().filter(d ->
-                d.equals(jour)).count();
-        int test = bissextile(jour.getYear()) ? 1 : 0;
-        if (test != 0 && !(monEntier > 1)) {
-            test--;
-        }
-        return monEntier != test;
+        return joursFeries(jour).stream().anyMatch(d -> d.equals(jour));
     }
+
 
     /**
      * Calcule si une date donnée est dans une plage (intervalle) de date (inclusif)
@@ -147,8 +95,7 @@ public final class Entreprise {
      * @return
      */
     public static boolean estDansPlage(LocalDate d, LocalDate debut, LocalDate fin) {
-        // à implémenter en TDD !
-        throw new RuntimeException("à implémenter en TDD !");
+        return (d.isEqual(debut) || d.isAfter(debut)) && (d.isEqual(fin) || d.isBefore(fin));
     }
 
 }
