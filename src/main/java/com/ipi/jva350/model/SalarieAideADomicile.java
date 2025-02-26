@@ -10,9 +10,7 @@ import java.util.Objects;
 
 @Entity
 public class SalarieAideADomicile {
-
     public static float CONGES_PAYES_ACQUIS_PAR_MOIS = 2.5f;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,21 +30,8 @@ public class SalarieAideADomicile {
 
     private LocalDate moisEnCours;
     private LocalDate moisDebutContrat;
-
     private double joursTravaillesAnneeN= 0;
     private double congesPayesAcquisAnneeN= 0;
-
-    /** en année N sur l'acquis N-1 */
-    @Convert(converter = LinkedHashSetStringConverter.class)
-    @Column
-    private LinkedHashSet<LocalDate> congesPayesPris = new LinkedHashSet<LocalDate>();
-    private double joursTravaillesAnneeNMoins1= 0;
-    private double congesPayesAcquisAnneeNMoins1= 0;
-    private double congesPayesPrisAnneeNMoins1= 0;
-
-    public SalarieAideADomicile() {
-    }
-
     public SalarieAideADomicile(String nom, LocalDate moisDebutContrat, LocalDate moisEnCours,
                                 //LinkedHashSet<LocalDate> congesPayesPris,
                                 double joursTravaillesAnneeN, double congesPayesAcquisAnneeN,
@@ -60,6 +45,16 @@ public class SalarieAideADomicile {
         this.joursTravaillesAnneeN = joursTravaillesAnneeN;
         this.congesPayesAcquisAnneeN = congesPayesAcquisAnneeN;
         //this.congesPayesPris = congesPayesPris;
+    }
+    /** en année N sur l'acquis N-1 */
+    @Convert(converter = LinkedHashSetStringConverter.class)
+    @Column
+    private LinkedHashSet<LocalDate> congesPayesPris = new LinkedHashSet<LocalDate>();
+    private double joursTravaillesAnneeNMoins1= 0;
+    private double congesPayesAcquisAnneeNMoins1= 0;
+    private double congesPayesPrisAnneeNMoins1= 0;
+
+    public SalarieAideADomicile() {
     }
 
     /**
@@ -115,8 +110,6 @@ public class SalarieAideADomicile {
     public boolean estHabituellementTravaille(LocalDate jour) {
         return joursHabituellementTravailles.contains(jour.getDayOfWeek());
     }
-
-
 
     public Long getId() {
         return id;
