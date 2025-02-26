@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SalarieAideADomicileTest {
-
     @ParameterizedTest
     @CsvSource({
             "2022-11-01, 2022-11-05, 4",
@@ -36,7 +35,6 @@ public class SalarieAideADomicileTest {
         salarie.setJoursTravaillesAnneeNMoins1(20);
         assertTrue(salarie.aLegalementDroitADesCongesPayes());
     }
-
     @Test
     void testALegalementDroitADesCongesPayes_CasLimite() {
         SalarieAideADomicile salarie = new SalarieAideADomicile();
@@ -73,11 +71,79 @@ public class SalarieAideADomicileTest {
         salarie.setJoursTravaillesAnneeNMoins1(5);
         assertFalse(salarie.aLegalementDroitADesCongesPayes());
     }
-
     @Test
     void testALegalementDroitADesCongesPayes_CasAvecUnJourDePlusQueLeLimite() {
         SalarieAideADomicile salarie = new SalarieAideADomicile();
         salarie.setJoursTravaillesAnneeNMoins1(11);
         assertTrue(salarie.aLegalementDroitADesCongesPayes());
+    }
+    @Test
+    void testSetAndGetMoisEnCours() {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        LocalDate moisEnCours = LocalDate.of(2024, 3, 1);
+        salarie.setMoisEnCours(moisEnCours);
+        assertThat(salarie.getMoisEnCours()).isEqualTo(moisEnCours);
+    }
+    @Test
+    void testSetAndGetMoisDebutContrat() {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        LocalDate moisDebutContrat = LocalDate.of(2020, 1, 1);
+        salarie.setMoisDebutContrat(moisDebutContrat);
+        assertThat(salarie.getMoisDebutContrat()).isEqualTo(moisDebutContrat);
+    }
+    @Test
+    void testEquals_SameObject() {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        salarie.setId(1L);
+        salarie.setNom("Dupont");
+        assertThat(salarie.equals(salarie)).isTrue();
+    }
+    @Test
+    void testEquals_DifferentObjectsSameValues() {
+        SalarieAideADomicile salarie1 = new SalarieAideADomicile();
+        salarie1.setId(1L);
+        salarie1.setNom("Dupont");
+        SalarieAideADomicile salarie2 = new SalarieAideADomicile();
+        salarie2.setId(1L);
+        salarie2.setNom("Dupont");
+        assertThat(salarie1.equals(salarie2)).isTrue();
+    }
+    @Test
+    void testEquals_DifferentObjectsDifferentValues() {
+        SalarieAideADomicile salarie1 = new SalarieAideADomicile();
+        salarie1.setId(1L);
+        salarie1.setNom("Dupont");
+        SalarieAideADomicile salarie2 = new SalarieAideADomicile();
+        salarie2.setId(2L);
+        salarie2.setNom("Martin");
+        assertThat(salarie1.equals(salarie2)).isFalse();
+    }
+    @Test
+    void testEquals_NullObject() {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        salarie.setId(1L);
+        salarie.setNom("Dupont");
+        assertThat(salarie.equals(null)).isFalse();
+    }
+    @Test
+    void testHashCode() {
+        SalarieAideADomicile salarie1 = new SalarieAideADomicile();
+        salarie1.setId(1L);
+        salarie1.setNom("Dupont");
+        SalarieAideADomicile salarie2 = new SalarieAideADomicile();
+        salarie2.setId(1L);
+        salarie2.setNom("Dupont");
+        assertThat(salarie1.hashCode()).isEqualTo(salarie2.hashCode());
+    }
+    @Test
+    void testHashCode_DifferentValues() {
+        SalarieAideADomicile salarie1 = new SalarieAideADomicile();
+        salarie1.setId(1L);
+        salarie1.setNom("Dupont");
+
+        SalarieAideADomicile salarie2 = new SalarieAideADomicile();
+        salarie2.setId(2L);
+        salarie2.setNom("Martin");
+        assertThat(salarie1.hashCode()).isNotEqualTo(salarie2.hashCode());
     }
 }
