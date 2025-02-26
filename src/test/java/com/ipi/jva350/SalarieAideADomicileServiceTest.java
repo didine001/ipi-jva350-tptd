@@ -17,6 +17,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +33,7 @@ public class SalarieAideADomicileServiceTest {
 
     @Mock
     private SalarieAideADomicileRepository repository;
+    private SalarieAideADomicile salarieAideADomicile;
 
     @Test
     public void testAjouteConge_SalarieSansDroitConges() {
@@ -39,10 +42,10 @@ public class SalarieAideADomicileServiceTest {
         LocalDate endDate = LocalDate.of(2022, 11, 5);
 
         Mockito.when(salarie.aLegalementDroitADesCongesPayes()).thenReturn(false);
-        SalarieException e = Assertions.assertThrows(SalarieException.class, () ->
+        SalarieException e = assertThrows(SalarieException.class, () ->
                 salarieAideADomicileService.ajouteConge(salarie, startDate, endDate)
         );
-        Assertions.assertEquals("N'a pas légalement droit à des congés payés !", e.getMessage());
+        assertEquals("N'a pas légalement droit à des congés payés !", e.getMessage());
     }
 
     @Test
@@ -53,10 +56,10 @@ public class SalarieAideADomicileServiceTest {
 
         Mockito.when(salarie.aLegalementDroitADesCongesPayes()).thenReturn(true);
         Mockito.when(salarie.calculeJoursDeCongeDecomptesPourPlage(startDate, endDate)).thenReturn(new LinkedHashSet<>());
-        SalarieException e = Assertions.assertThrows(SalarieException.class, () ->
+        SalarieException e = assertThrows(SalarieException.class, () ->
                 salarieAideADomicileService.ajouteConge(salarie, startDate, endDate)
         );
-        Assertions.assertEquals("Pas besoin de congés !", e.getMessage());
+        assertEquals("Pas besoin de congés !", e.getMessage());
     }
 
     @Test
@@ -70,10 +73,10 @@ public class SalarieAideADomicileServiceTest {
                 .thenReturn(new LinkedHashSet<>(Arrays.asList(startDate, LocalDate.of(2022, 10, 2))));
         Mockito.when(salarie.getMoisEnCours()).thenReturn(LocalDate.of(2022, 11, 1));
 
-        SalarieException e = Assertions.assertThrows(SalarieException.class, () ->
+        SalarieException e = assertThrows(SalarieException.class, () ->
                 salarieAideADomicileService.ajouteConge(salarie, startDate, endDate)
         );
-        Assertions.assertEquals("Pas possible de prendre de congé avant le mois en cours !", e.getMessage());
+        assertEquals("Pas possible de prendre de congé avant le mois en cours !", e.getMessage());
     }
 
     @Test
@@ -94,15 +97,14 @@ public class SalarieAideADomicileServiceTest {
 
         when(repository.findByNom("Dupont")).thenReturn(new SalarieAideADomicile());
 
-        Assertions.assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
+        assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
     }
-
     @Test
     public void testCreerSalarie_IdDejaFournie() {
         SalarieAideADomicile salarie = new SalarieAideADomicile();
         salarie.setId(1L);
         salarie.setNom("Martin");
 
-        Assertions.assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
+        assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
     }
 }
