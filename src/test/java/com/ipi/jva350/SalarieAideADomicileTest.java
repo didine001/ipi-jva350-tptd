@@ -1,6 +1,7 @@
 package com.ipi.jva350;
 
 import com.ipi.jva350.model.SalarieAideADomicile;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -145,5 +146,21 @@ public class SalarieAideADomicileTest {
         salarie2.setId(2L);
         salarie2.setNom("Martin");
         assertThat(salarie1.hashCode()).isNotEqualTo(salarie2.hashCode());
+    }
+    @Test
+    public void testEstJourOuvrable() {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        LocalDate lundi = LocalDate.of(2024, 2, 26);
+        LocalDate dimanche = LocalDate.of(2024, 2, 25);
+
+        Assertions.assertTrue(salarie.estJourOuvrable(lundi));
+        Assertions.assertFalse(salarie.estJourOuvrable(dimanche));
+    }
+    @Test
+    public void testGetCongesPayesRestantAnneeNMoins1() {
+        SalarieAideADomicile salarie = new SalarieAideADomicile();
+        salarie.setCongesPayesAcquisAnneeNMoins1(15);
+        salarie.setCongesPayesPrisAnneeNMoins1(5);
+        Assertions.assertEquals(10, salarie.getCongesPayesRestantAnneeNMoins1());
     }
 }
