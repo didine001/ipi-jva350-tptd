@@ -5,6 +5,7 @@ import com.ipi.jva350.model.SalarieAideADomicile;
 import com.ipi.jva350.service.SalarieAideADomicileService;
 import com.ipi.jva350.repository.SalarieAideADomicileRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +22,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SalarieAideADomicileServiceTest {
 
+    @BeforeEach
+    void setUp() {
+        repository.deleteAll();
+    }
     @InjectMocks
     private SalarieAideADomicileService salarieAideADomicileService;
 
@@ -99,5 +104,15 @@ public class SalarieAideADomicileServiceTest {
         salarie.setNom("Martin");
 
         Assertions.assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
+    }
+    @Test
+    public void testAjouteConge_Success(){
+        SalarieAideADomicile salarie = new SalarieAideADomicile("Dupont", LocalDate.of(2022, 1, 1), LocalDate.of(2024, 2, 1),
+                200, 20, 180, 18, 5);
+        repository.save(salarie);
+        LocalDate startDate = LocalDate.of(2024, 3, 1);
+        LocalDate endDate = LocalDate.of(2024, 3, 5);
+
+        Assertions.assertDoesNotThrow(() -> salarieAideADomicileService.ajouteConge(salarie, startDate, endDate));
     }
 }
