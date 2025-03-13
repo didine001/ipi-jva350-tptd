@@ -21,6 +21,8 @@ public class SalarieAideADomicileService {
     private SalarieAideADomicileRepository salarieAideADomicileRepository;
 
     public SalarieAideADomicileService() {
+        // Initialize necessary components or dependencies here.
+        // Example: this.someDependency = new SomeDependency();
     }
 
     /**
