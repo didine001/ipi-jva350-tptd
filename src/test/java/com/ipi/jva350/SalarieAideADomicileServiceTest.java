@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -17,8 +19,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +29,7 @@ public class SalarieAideADomicileServiceTest {
     void setUp() {
         repository.deleteAll();
     }
+
     @InjectMocks
     private SalarieAideADomicileService salarieAideADomicileService;
 
@@ -99,6 +101,7 @@ public class SalarieAideADomicileServiceTest {
 
         assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
     }
+
     @Test
     public void testCreerSalarie_IdDejaFournie() {
         SalarieAideADomicile salarie = new SalarieAideADomicile();
@@ -107,4 +110,5 @@ public class SalarieAideADomicileServiceTest {
 
         assertThrows(SalarieException.class, () -> salarieAideADomicileService.creerSalarieAideADomicile(salarie));
     }
+
 }
